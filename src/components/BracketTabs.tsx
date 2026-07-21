@@ -3,6 +3,7 @@
 import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { StartggSet } from "@/lib/startgg";
+import { FlagImage, getPlayerCountry } from "@/components/FlagImage";
 
 interface BracketTabsProps {
   sets: StartggSet[];
@@ -103,10 +104,11 @@ export function BracketTabs({ sets }: BracketTabsProps) {
         <div className="flex flex-col gap-2 font-mono text-xs">
           <div className="flex justify-between items-center gap-3">
             <span className={cn(
-              "truncate max-w-[170px]",
+              "truncate max-w-[170px] flex items-center gap-1.5",
               p1Winner ? "text-neon font-bold" : "text-bone"
             )}>
-              {p1}
+              <FlagImage country={getPlayerCountry(p1)} />
+              <span className="truncate">{p1}</span>
             </span>
             <span className={cn(
               "font-mono text-xs font-bold px-2 py-0.5 rounded-sm min-w-[20px] text-center",
@@ -117,10 +119,11 @@ export function BracketTabs({ sets }: BracketTabsProps) {
           </div>
           <div className="flex justify-between items-center gap-3">
             <span className={cn(
-              "truncate max-w-[170px]",
+              "truncate max-w-[170px] flex items-center gap-1.5",
               p2Winner ? "text-neon font-bold" : "text-bone"
             )}>
-              {p2}
+              <FlagImage country={getPlayerCountry(p2)} />
+              <span className="truncate">{p2}</span>
             </span>
             <span className={cn(
               "font-mono text-xs font-bold px-2 py-0.5 rounded-sm min-w-[20px] text-center",

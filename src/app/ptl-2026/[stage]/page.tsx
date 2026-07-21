@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { CmsTitleText } from "@/components/CmsTitleText";
 import { RefreshButton } from "@/components/RefreshButton";
 import { BracketTabs } from "@/components/BracketTabs";
+import { FlagImage, getPlayerCountry } from "@/components/FlagImage";
 import { cn } from "@/lib/cn";
 
 interface PageProps {
@@ -160,6 +161,7 @@ export default async function StageDetailPage({ params }: PageProps) {
                         <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-mono text-[10px]", rankBg)}>
                           {rankStr}
                         </div>
+                        <FlagImage country={getPlayerCountry(node.entrant?.name || "")} />
                         <span className="font-mono text-sm tracking-wider uppercase text-white truncate">
                           {node.entrant?.name || "TBA"}
                         </span>
