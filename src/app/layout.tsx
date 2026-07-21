@@ -33,6 +33,11 @@ export const metadata: Metadata = {
   description:
     "Pakistan's leading fighting-game esports organization. Home of Takedown, The Baaz Gauntlet, and the Pakistan Tekken League.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     title: "BAAZ GG",
     description: "Pakistan's home for the FGC.",
