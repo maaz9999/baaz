@@ -10,6 +10,8 @@ import { cmsBodyText, cmsCta, cmsEyebrow, cmsItems, cmsTitle, getCircuitBySlug, 
 import { ptlPointsRace, ptlStageChampions, ptlStages } from "@/lib/ptlPoints";
 import { cn } from "@/lib/cn";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 export const metadata = { title: "PTL 2026 - BAAZ GG" };
 
 const fallbackStages = [
@@ -187,7 +189,7 @@ export default async function PTLPage() {
       <section className="mx-auto max-w-[1400px] px-5 py-24 lg:px-10">
         <SectionHeader
           eyebrow={cmsEyebrow(bracket, "STAGE RESULTS")}
-          title={<CmsTitleText text={cmsTitle(bracket, "Three stages down.\nOne to go.")} />}
+          title={<CmsTitleText text={cmsTitle(bracket, "Four stages complete.\nRoad to Finale.")} />}
         />
         <div className="mt-16 grid gap-6 grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto">
           {stageResults.map((stage) => (

@@ -19,28 +19,26 @@ export function BracketTabs({ sets }: BracketTabsProps) {
   const validSets = sets.filter((s) => s?.slots?.some((sl) => sl.entrant));
 
   // Extract Top 8 Sets using robust phase-name and round filters
-  let top8Sets = validSets.filter((set) => {
-    const phaseName = set.phaseGroup?.phase?.name?.toLowerCase() || "";
-    if (phaseName.includes("top 8")) return true;
+  let top8Sets = validSets.filter((s) => s.phaseGroup?.phase?.name?.toLowerCase().includes("top 8"));
 
-    const name = set.fullRoundText?.toLowerCase() || "";
-    return (
-      name.includes("winners semi") ||
-      name.includes("winners final") ||
-      name.includes("grand final") ||
-      name.includes("losers round 1") ||
-      name.includes("losers quarter") ||
-      name.includes("losers semi") ||
-      name.includes("losers final") ||
-      set.round === 1 ||
-      set.round === 2 ||
-      set.round === 3 ||
-      set.round === -3 ||
-      set.round === -4 ||
-      set.round === -5 ||
-      set.round === -6
-    );
-  });
+  if (top8Sets.length === 0) {
+    top8Sets = validSets.filter((s) => s.phaseGroup?.phase?.name?.toLowerCase().includes("top 16"));
+  }
+
+  if (top8Sets.length === 0) {
+    top8Sets = validSets.filter((set) => {
+      const name = set.fullRoundText?.toLowerCase() || "";
+      return (
+        name.includes("winners semi") ||
+        name.includes("winners final") ||
+        name.includes("grand final") ||
+        name.includes("losers round 1") ||
+        name.includes("losers quarter") ||
+        name.includes("losers semi") ||
+        name.includes("losers final")
+      );
+    });
+  }
 
   // Map to individual match positions
   const wSemis = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("winners semi"));

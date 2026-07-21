@@ -9,6 +9,8 @@ import { RefreshButton } from "@/components/RefreshButton";
 import { BracketTabs } from "@/components/BracketTabs";
 import { FlagImage, getPlayerCountry } from "@/components/FlagImage";
 import { cn } from "@/lib/cn";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ stage: string }>;

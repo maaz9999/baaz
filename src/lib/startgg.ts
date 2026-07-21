@@ -114,6 +114,12 @@ export async function fetchEventDetails(slug: string): Promise<StartggEventPaylo
             winnerId
             fullRoundText
             round
+            phaseGroup {
+              phase {
+                id
+                name
+              }
+            }
             slots {
               standing {
                 stats {
