@@ -19,6 +19,7 @@ import { cn } from "@/lib/cn";
 import { BracketTabs } from "@/components/BracketTabs";
 import { RefreshButton } from "@/components/RefreshButton";
 import { TwitchLiveSection } from "@/components/TwitchLiveSection";
+import { FlagImage, getPlayerCountry } from "@/components/FlagImage";
 
 const CASTER_DETAILS: Record<string, { country: string; realName?: string }> = {
   "INFANAX": { country: "PK" },
@@ -548,7 +549,7 @@ export function EventDetailClient({
           </div>
           {event.slug === "pak-vs-korea-2025" ? (
             <TeamMatchShowcase />
-          ) : event.slug === "takedown-2026" ? (
+          ) : (event.slug === "takedown-2026" || event.slug.startsWith("ptl-stage-")) ? (
             (() => {
               const gameData = startggData?.[selectedGame];
               const standings = gameData?.standings?.nodes || [];
@@ -605,6 +606,7 @@ export function EventDetailClient({
                                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-mono text-[10px]", rankBg)}>
                                   {rankStr}
                                 </div>
+                                <FlagImage country={getPlayerCountry(name)} />
                                 <span className="font-mono text-sm tracking-wider uppercase text-white truncate">
                                   {name}
                                 </span>
@@ -623,7 +625,7 @@ export function EventDetailClient({
                   {/* Sets Bracket */}
                   <div className="lg:col-span-8">
                     <h3 className="flex items-center gap-2.5 font-display text-lg uppercase tracking-wider text-white border-b border-stone-3/30 pb-4 mb-6">
-                      <Gamepad2 size={16} className="text-neon" /> Live Matches
+                      <Gamepad2 size={16} className="text-neon" /> Live Matches & Brackets
                     </h3>
                     <BracketTabs sets={sets} />
                   </div>

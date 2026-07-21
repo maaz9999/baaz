@@ -23,11 +23,18 @@ export default async function EventDetail({
   const [event, allPlayers, allSponsors] = await Promise.all([getEventBySlug(slug), getPlayers(), getSponsors()]);
   if (!event) notFound();
 
-  // Fetch start.gg bracket data if Takedown 2026
+  // Fetch start.gg bracket data if Takedown 2026 or PTL Stages
   let startggData: Record<string, any> = {};
-  if (slug === "takedown-2026") {
+  if (slug === "takedown-2026" || slug.startsWith("ptl-stage-")) {
+    const ptlStageMap: Record<string, string> = {
+      "ptl-stage-1": "tournament/pakistan-tekken-league-stage-1/event/tekken-8",
+      "ptl-stage-2": "tournament/pakistan-tekken-league-stage-2/event/tekken-8",
+      "ptl-stage-3": "tournament/pakistan-tekken-league-stage-3/event/tekken-8",
+      "ptl-stage-4": "tournament/pakistan-tekken-league-stage-4/event/tekken-8",
+    };
+
     const startggSlugs: Record<string, string> = {
-      "tekken-8": "tournament/takedown-2026/event/tekken-8-twt-2026-challenger",
+      "tekken-8": ptlStageMap[slug] || "tournament/takedown-2026/event/tekken-8-twt-2026-challenger",
       "sf-6": "tournament/takedown-2026/event/street-fighter-6",
       "fatal-fury": "tournament/takedown-2026/event/fatal-fury-city-of-the-wolves-swc-2026-master-2",
       "fc-26": "tournament/takedown-2026/event/ea-sports-fc-26"

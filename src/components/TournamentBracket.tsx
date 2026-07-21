@@ -72,6 +72,7 @@ export function TournamentBracket({ game = "tekken-7", eventSlug }: { game?: str
   const isFF = game === "fatal-fury";
   const isGauntlet = eventSlug === "baaz-gauntlet-2024";
   const isTakedown25 = eventSlug === "takedown-2025-t8";
+  const isStage4 = eventSlug === "ptl-stage-4";
 
   // UB Quarterfinals (Only for Gauntlet)
   const ubQuartersT8 = [
@@ -98,7 +99,18 @@ export function TournamentBracket({ game = "tekken-7", eventSlug }: { game?: str
   ];
 
   // UB Semifinals
-  const ubSemis = isFF ? [
+  const ubSemis = isStage4 ? [
+    {
+      roundName: "UB Semifinals",
+      p1: { name: "ATIF", score: 3, isWinner: true, country: "PK" },
+      p2: { name: "Usama Abbasi", score: 1, isWinner: false, country: "PK" },
+    },
+    {
+      roundName: "UB Semifinals",
+      p1: { name: "M. Zubair", score: 1, isWinner: false, country: "PK" },
+      p2: { name: "Numan Ch", score: 3, isWinner: true, country: "PK" },
+    }
+  ] : isFF ? [
     {
       roundName: "UB Semifinals",
       p1: { name: "Hazz", score: 2, isWinner: true, country: "PK" },
@@ -156,7 +168,11 @@ export function TournamentBracket({ game = "tekken-7", eventSlug }: { game?: str
   ];
 
   // UB Final
-  const ubFinal = isFF ? {
+  const ubFinal = isStage4 ? {
+    roundName: "Upper Bracket Final",
+    p1: { name: "ATIF", score: 0, isWinner: false, country: "PK" },
+    p2: { name: "Numan Ch", score: 3, isWinner: true, country: "PK" },
+  } : isFF ? {
     roundName: "Upper Bracket Final",
     p1: { name: "Hazz", score: 3, isWinner: true, country: "PK" },
     p2: { name: "Ahmer kyo", score: 1, isWinner: false, country: "PK" },
@@ -179,7 +195,12 @@ export function TournamentBracket({ game = "tekken-7", eventSlug }: { game?: str
   };
 
   // Grand Final
-  const grandFinal = isFF ? {
+  const grandFinal = isStage4 ? {
+    roundName: "Grand Final",
+    p1: { name: "Numan Ch", score: "0 / 2", isWinner: false, country: "PK" },
+    p2: { name: "M. Zubair", score: "3 / 3", isWinner: true, country: "PK" },
+    status: "RESET / ZUBAIR WINS"
+  } : isFF ? {
     roundName: "Grand Final",
     p1: { name: "Hazz", score: "1 / 3", isWinner: true, country: "PK" },
     p2: { name: "Baberzaki", score: "3 / 1", isWinner: false, country: "PK" },
