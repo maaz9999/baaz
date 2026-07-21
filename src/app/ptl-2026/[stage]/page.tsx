@@ -57,8 +57,143 @@ export default async function StageDetailPage({ params }: PageProps) {
 
   const data = await fetchEventDetails(stageInfo.slug);
 
-  let rawStandings = data?.standings?.nodes || [];
-  
+  const STAGE_4_FALLBACK_STANDINGS = [
+    { placement: 1, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+    { placement: 2, entrant: { id: 24100300, name: "FALCON | Numan Ch" } },
+    { placement: 3, entrant: { id: 24035430, name: "Falcons | ATIF" } },
+    { placement: 4, entrant: { id: 24093424, name: "Falcons | Farzeen" } },
+    { placement: 5, entrant: { id: 24057078, name: "FALCONS | usama abbasi" } },
+    { placement: 5, entrant: { id: 24093152, name: "QAD | THE JON" } },
+    { placement: 7, entrant: { id: 24097452, name: "Kashi Snake" } },
+    { placement: 7, entrant: { id: 24035460, name: "CC | XYN | Irtaxa" } },
+  ];
+
+  const STAGE_4_FALLBACK_SETS = [
+    {
+      id: 105503746,
+      state: 3,
+      winnerId: 24003347,
+      fullRoundText: "Grand Final",
+      round: 3,
+      slots: [
+        { standing: { stats: { score: { value: 0 } } }, entrant: { id: 24100300, name: "FALCON | Numan Ch" } },
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+      ],
+    },
+    {
+      id: 105503747,
+      state: 3,
+      winnerId: 24003347,
+      fullRoundText: "Grand Final Reset",
+      round: 3,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+        { standing: { stats: { score: { value: 2 } } }, entrant: { id: 24100300, name: "FALCON | Numan Ch" } },
+      ],
+    },
+    {
+      id: 105503745,
+      state: 3,
+      winnerId: 24100300,
+      fullRoundText: "Winners Final",
+      round: 2,
+      slots: [
+        { standing: { stats: { score: { value: 0 } } }, entrant: { id: 24035430, name: "Falcons | ATIF" } },
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24100300, name: "FALCON | Numan Ch" } },
+      ],
+    },
+    {
+      id: 105503761,
+      state: 3,
+      winnerId: 24003347,
+      fullRoundText: "Losers Final",
+      round: -6,
+      slots: [
+        { standing: { stats: { score: { value: 0 } } }, entrant: { id: 24035430, name: "Falcons | ATIF" } },
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+      ],
+    },
+    {
+      id: 105503760,
+      state: 3,
+      winnerId: 24003347,
+      fullRoundText: "Losers Semi-Final",
+      round: -5,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+        { standing: { stats: { score: { value: 0 } } }, entrant: { id: 24093424, name: "Falcons | Farzeen" } },
+      ],
+    },
+    {
+      id: 105503743,
+      state: 3,
+      winnerId: 24035430,
+      fullRoundText: "Winners Semi-Final",
+      round: 1,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24035430, name: "Falcons | ATIF" } },
+        { standing: { stats: { score: { value: 1 } } }, entrant: { id: 24057078, name: "FALCONS | usama abbasi" } },
+      ],
+    },
+    {
+      id: 105503744,
+      state: 3,
+      winnerId: 24100300,
+      fullRoundText: "Winners Semi-Final",
+      round: 1,
+      slots: [
+        { standing: { stats: { score: { value: 1 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24100300, name: "FALCON | Numan Ch" } },
+      ],
+    },
+    {
+      id: 105503758,
+      state: 3,
+      winnerId: 24003347,
+      fullRoundText: "Losers Quarter-Final",
+      round: -4,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24003347, name: "AG | M. Zubair" } },
+        { standing: { stats: { score: { value: 2 } } }, entrant: { id: 24093152, name: "QAD | THE JON" } },
+      ],
+    },
+    {
+      id: 105503759,
+      state: 3,
+      winnerId: 24093424,
+      fullRoundText: "Losers Quarter-Final",
+      round: -4,
+      slots: [
+        { standing: { stats: { score: { value: 1 } } }, entrant: { id: 24057078, name: "FALCONS | usama abbasi" } },
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24093424, name: "Falcons | Farzeen" } },
+      ],
+    },
+    {
+      id: 105503756,
+      state: 3,
+      winnerId: 24093152,
+      fullRoundText: "Losers Round 1",
+      round: -3,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24093152, name: "QAD | THE JON" } },
+        { standing: { stats: { score: { value: 2 } } }, entrant: { id: 24097452, name: "Kashi Snake" } },
+      ],
+    },
+    {
+      id: 105503757,
+      state: 3,
+      winnerId: 24093424,
+      fullRoundText: "Losers Round 1",
+      round: -3,
+      slots: [
+        { standing: { stats: { score: { value: 3 } } }, entrant: { id: 24093424, name: "Falcons | Farzeen" } },
+        { standing: { stats: { score: { value: 1 } } }, entrant: { id: 24035460, name: "CC | XYN | Irtaxa" } },
+      ],
+    },
+  ];
+
+  let rawStandings = data?.standings?.nodes?.length ? data.standings.nodes : (stageKey === "stage-4" ? STAGE_4_FALLBACK_STANDINGS : []);
+
   // Resolve Stage 4 ties (M. Zubair 1st, Numan Ch 2nd)
   if (stageKey === "stage-4") {
     rawStandings = rawStandings.map((node) => {
@@ -78,7 +213,7 @@ export default async function StageDetailPage({ params }: PageProps) {
     entrant: node.entrant ? { ...node.entrant, name: cleanName(node.entrant.name) } : null
   }));
 
-  const sets = data?.sets?.nodes || [];
+  const sets = data?.sets?.nodes?.length ? data.sets.nodes : (stageKey === "stage-4" ? STAGE_4_FALLBACK_SETS : []);
 
   return (
     <>

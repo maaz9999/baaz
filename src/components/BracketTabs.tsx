@@ -21,32 +21,40 @@ export function BracketTabs({ sets }: BracketTabsProps) {
   // Extract Top 8 Sets using robust phase-name and round filters
   let top8Sets = validSets.filter((set) => {
     const phaseName = set.phaseGroup?.phase?.name?.toLowerCase() || "";
-    return phaseName.includes("top 8");
+    if (phaseName.includes("top 8")) return true;
+
+    const name = set.fullRoundText?.toLowerCase() || "";
+    return (
+      name.includes("winners semi") ||
+      name.includes("winners final") ||
+      name.includes("grand final") ||
+      name.includes("losers round 1") ||
+      name.includes("losers quarter") ||
+      name.includes("losers semi") ||
+      name.includes("losers final") ||
+      set.round === 1 ||
+      set.round === 2 ||
+      set.round === 3 ||
+      set.round === -3 ||
+      set.round === -4 ||
+      set.round === -5 ||
+      set.round === -6
+    );
   });
 
-  if (top8Sets.length === 0) {
-    top8Sets = validSets.filter((set) => {
-      const name = set.fullRoundText?.toLowerCase() || "";
-      const round = set.round;
-
-      const isWinnersTop8 = name.includes("winners semi") || name.includes("winners final") || name.includes("grand final");
-      const isLosersTop8 = name.includes("losers quarter") || name.includes("losers semi") || name.includes("losers final") || round === -5;
-
-      return isWinnersTop8 || isLosersTop8;
-    });
-  }
-
   // Map to individual match positions
-  const wSemis = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("semi") && s.round > 0);
-  const wFinal = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("winners final") || (s.round === 4 && s.fullRoundText?.toLowerCase().includes("final")));
-  const gFinals = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("grand final")).sort((a, b) => Number(a.id) - Number(b.id));
-  const gf1 = gFinals[0] || null;
-  const gf2 = gFinals[1] || null;
+  const wSemis = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("winners semi"));
+  const wFinal = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("winners final"));
+  const gFinals = top8Sets
+    .filter((s) => s.fullRoundText?.toLowerCase().includes("grand final"))
+    .sort((a, b) => Number(a.id) - Number(b.id));
+  const gf1 = gFinals.find((s) => !s.fullRoundText?.toLowerCase().includes("reset")) || gFinals[0] || null;
+  const gf2 = gFinals.find((s) => s.fullRoundText?.toLowerCase().includes("reset")) || (gFinals.length > 1 ? gFinals[1] : null);
 
-  const lRound1 = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers round 1") || s.round === -5);
-  const lQuarters = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers quarter") || s.round === -6);
-  const lSemis = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers semi") || s.round === -7);
-  const lFinal = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers final") || s.round === -8);
+  const lRound1 = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers round 1"));
+  const lQuarters = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers quarter"));
+  const lSemis = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers semi"));
+  const lFinal = top8Sets.filter((s) => s.fullRoundText?.toLowerCase().includes("losers final"));
 
   const renderMatchCard = (set: StartggSet | null, letter: string) => {
     if (!set) {
