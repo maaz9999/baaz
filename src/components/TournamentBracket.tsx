@@ -16,9 +16,28 @@ type MatchProps = {
   status?: string;
 };
 
-function MatchCard({ roundName, p1, p2, status }: MatchProps) {
-  const getFlagUrl = (c: string) => `https://flagcdn.com/w40/${c.toLowerCase()}.png`;
+function FlagImage({ country }: { country: string }) {
+  const code = (country || "PK").toUpperCase();
+  const flagUrl = `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
 
+  return (
+    <span className="inline-flex items-center shrink-0">
+      <img
+        src={flagUrl}
+        alt={code}
+        onError={(e) => {
+          (e.currentTarget as HTMLElement).style.display = "none";
+          const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+          if (sibling) sibling.style.display = "inline";
+        }}
+        className="h-2.5 w-3.5 object-cover border border-stone-3/40 rounded-[1px]"
+      />
+      <span className="hidden font-mono text-[9px] leading-none">{countryFlag(code) || "🇵🇰"}</span>
+    </span>
+  );
+}
+
+function MatchCard({ roundName, p1, p2, status }: MatchProps) {
   return (
     <div className="bracket-frame border border-stone-3/60 bg-stone/40 p-2.5 w-[160px] shrink-0 transition-all hover:border-neon/40 card-depth">
       <div className="font-mono text-[7px] uppercase tracking-[0.12em] text-ash mb-1.5 border-b border-stone-3/20 pb-0.5 flex justify-between">
@@ -29,7 +48,7 @@ function MatchCard({ roundName, p1, p2, status }: MatchProps) {
         {/* Player 1 */}
         <div className={`flex items-center justify-between px-1.5 py-0.5 ${p1.isWinner ? "bg-neon/5 text-bone font-semibold border-l-2 border-neon" : "text-bone/50"}`}>
           <div className="flex items-center gap-1.5 min-w-0 truncate">
-            <img src={getFlagUrl(p1.country)} alt={p1.country} className="h-2.5 w-3.5 object-cover border border-stone-3/40 rounded-[1px] shrink-0" />
+            <FlagImage country={p1.country} />
             <span className="truncate max-w-[105px]">{p1.name}</span>
           </div>
           <span className={p1.isWinner ? "text-neon" : ""}>{p1.score}</span>
@@ -37,7 +56,7 @@ function MatchCard({ roundName, p1, p2, status }: MatchProps) {
         {/* Player 2 */}
         <div className={`flex items-center justify-between px-1.5 py-0.5 ${p2.isWinner ? "bg-neon/5 text-bone font-semibold border-l-2 border-neon" : "text-bone/50"}`}>
           <div className="flex items-center gap-1.5 min-w-0 truncate">
-            <img src={getFlagUrl(p2.country)} alt={p2.country} className="h-2.5 w-3.5 object-cover border border-stone-3/40 rounded-[1px] shrink-0" />
+            <FlagImage country={p2.country} />
             <span className="truncate max-w-[105px]">{p2.name}</span>
           </div>
           <span className={p2.isWinner ? "text-neon" : ""}>{p2.score}</span>

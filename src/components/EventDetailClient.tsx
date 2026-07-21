@@ -480,28 +480,35 @@ export function EventDetailClient({
           </div>
 
           {/* Redesigned Metrics Grid */}
-          <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatBlock
-              label="DATES"
-              value={formatDateRange(event.startDate, event.endDate)}
-              sub="Event Schedule"
-            />
-            <StatBlock
-              label="VENUE"
-              value={event.venue}
-              sub={`${event.city}, ${event.country}`}
-            />
-            <StatBlock
-              label="PRIZE POOL"
-              value={currentPrize.display}
-              sub={currentPrize.usd ? `≃ $${currentPrize.usd.toLocaleString()} USD` : "Regional Pool"}
-            />
-            <StatBlock
-              label="FORMAT"
-              value={currentFormat}
-              sub={currentParticipants ? `${currentParticipants} ENTRANTS` : "Tournament Bracket"}
-            />
-          </div>
+          {(() => {
+            const showPrizePool = !event.slug.includes("stage") && event.slug !== "ptl-2026" && currentPrize?.display && currentPrize.display !== "TBA";
+            return (
+              <div className={cn("mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2", showPrizePool ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
+                <StatBlock
+                  label="DATES"
+                  value={formatDateRange(event.startDate, event.endDate)}
+                  sub="Event Schedule"
+                />
+                <StatBlock
+                  label="VENUE"
+                  value={event.venue}
+                  sub={`${event.city}, ${event.country}`}
+                />
+                {showPrizePool && (
+                  <StatBlock
+                    label="PRIZE POOL"
+                    value={currentPrize.display}
+                    sub={currentPrize.usd ? `≃ $${currentPrize.usd.toLocaleString()} USD` : "Regional Pool"}
+                  />
+                )}
+                <StatBlock
+                  label="FORMAT"
+                  value={currentFormat}
+                  sub={currentParticipants ? `${currentParticipants} ENTRANTS` : "Tournament Bracket"}
+                />
+              </div>
+            );
+          })()}
         </div>
       </section>
 
@@ -626,148 +633,6 @@ export function EventDetailClient({
           ) : (
             <TournamentBracket game={selectedGame} eventSlug={event.slug} />
           )}
-        </section>
-      )}
-
-      {/* NOTABLE ENTRANTS OR GAUNTLET PARTICIPANTS */}
-      {selectedGame && (selectedGame === "tekken-7" || selectedGame === "kof-xv" || selectedGame === "tekken-8") && event.slug !== "pak-vs-korea-2025" && event.slug !== "takedown-2026" && (
-        <section className="mx-auto max-w-[1400px] px-5 pb-20 lg:px-10">
-          <div className="mb-8 flex items-end justify-between border-b border-stone-3/20 pb-4">
-            <div>
-              <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-neon slash">PLAYERS</div>
-              <h2 className="display mt-2.5 text-3xl md:text-4xl text-bone">
-                {event.slug === "baaz-gauntlet-2024" ? "Participants" : "Notable Entrants"}
-              </h2>
-            </div>
-          </div>
-          {event.slug === "baaz-gauntlet-2024" ? (
-            <GauntletParticipants />
-          ) : (
-            <NotableEntrants game={selectedGame} />
-          )}
-        </section>
-      )}
-
-      {/* SPONSORS */}
-      {sponsors.length > 0 && event.slug !== "pak-vs-korea-2025" && selectedGame !== "fatal-fury" && event.slug !== "takedown-2026" && (
-        <section className="border-t border-stone-3/30 bg-void">
-          <div className="mx-auto max-w-[1400px] px-5 py-20 lg:px-10">
-            <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-neon slash">REPRESENTATION</div>
-            <h2 className="display mt-2.5 text-3xl md:text-4xl text-bone">Orgs backing players.</h2>
-
-            {teamSponsors.length > 0 && (
-              <div className="mt-12">
-                <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-ash border-b border-stone-3/20 pb-2">TEAM REPRESENTATION</div>
-                <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-                  {teamSponsors.map((s) => <SponsorTile key={s.slug} sponsor={s} />)}
-                </div>
-              </div>
-            )}
-            {otherSponsors.length > 0 && (
-              <div className="mt-12">
-                <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-ash border-b border-stone-3/20 pb-2">SUPPORTING PARTNERS</div>
-                <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-                  {otherSponsors.map((s) => <SponsorTile key={s.slug} sponsor={s} />)}
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* BROADCAST / ON AIR */}
-      {((currentCasters && currentCasters.length > 0) || broadcastPartners.length > 0) && event.slug !== "takedown-2026" && (
-        <section className="border-t border-stone-3/30 bg-void">
-          <div className="mx-auto max-w-[1400px] px-5 py-20 lg:px-10">
-            <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-neon slash">ON AIR</div>
-            
-            {currentCasters && currentCasters.length > 0 && (
-              <>
-                <h2 className="display mt-2.5 text-3xl md:text-4xl text-bone">Broadcast Talent lineup.</h2>
-                
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-8">
-                  {currentCasters.some(t => t.toUpperCase() === "DNM") ? (
-                    <>
-                      {/* Host Column */}
-                      <div className="md:col-span-4 flex flex-col">
-                        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-ash border-b border-stone-3/20 pb-2 mb-4">HOST</div>
-                        <div className="flex flex-col gap-3 items-start">
-                          {currentCasters.filter(t => t.toUpperCase() === "DNM").map((t) => {
-                            const details = CASTER_DETAILS[t.toUpperCase()];
-                            const flagUrl = details ? `https://flagcdn.com/w40/${details.country.toLowerCase()}.png` : undefined;
-                            return (
-                              <span key={t} className="bracket-frame group flex items-center gap-2 border border-stone-3/50 bg-stone/20 px-4.5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-bone/80 transition-all duration-200 hover:border-neon hover:text-neon w-full sm:w-auto">
-                                {flagUrl && (
-                                  <img src={flagUrl} alt={details?.country} className="h-3 w-4.5 object-cover border border-stone-3/40 rounded-[1px] shrink-0" />
-                                )}
-                                <span>{t}</span>
-                                {details?.realName && (
-                                  <span className="text-[10px] text-ash normal-case font-body tracking-normal">({details.realName})</span>
-                                )}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      
-                      {/* Commentators Column */}
-                      <div className="md:col-span-8 flex flex-col">
-                        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-ash border-b border-stone-3/20 pb-2 mb-4">COMMENTATORS</div>
-                        <div className="flex flex-wrap gap-3 items-start">
-                          {currentCasters.filter(t => t.toUpperCase() !== "DNM").map((t) => {
-                            const details = CASTER_DETAILS[t.toUpperCase()];
-                            const flagUrl = details ? `https://flagcdn.com/w40/${details.country.toLowerCase()}.png` : undefined;
-                            return (
-                              <span key={t} className="bracket-frame group flex items-center gap-2 border border-stone-3/50 bg-stone/20 px-4.5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-bone/80 transition-all duration-200 hover:border-neon hover:text-neon">
-                                {flagUrl && (
-                                  <img src={flagUrl} alt={details?.country} className="h-3 w-4.5 object-cover border border-stone-3/40 rounded-[1px] shrink-0" />
-                                )}
-                                <span>{t}</span>
-                                {details?.realName && (
-                                  <span className="text-[10px] text-ash normal-case font-body tracking-normal">({details.realName})</span>
-                                )}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    /* Default (no host) */
-                    <div className="md:col-span-12 flex flex-col">
-                      <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-ash border-b border-stone-3/20 pb-2 mb-4">COMMENTATORS</div>
-                      <div className="flex flex-wrap gap-3 items-start">
-                        {currentCasters.map((t) => {
-                          const details = CASTER_DETAILS[t.toUpperCase()];
-                          const flagUrl = details ? `https://flagcdn.com/w40/${details.country.toLowerCase()}.png` : undefined;
-                          return (
-                            <span key={t} className="bracket-frame group flex items-center gap-2 border border-stone-3/50 bg-stone/20 px-4.5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-bone/80 transition-all duration-200 hover:border-neon hover:text-neon">
-                              {flagUrl && (
-                                  <img src={flagUrl} alt={details?.country} className="h-3 w-4.5 object-cover border border-stone-3/40 rounded-[1px] shrink-0" />
-                              )}
-                              <span>{t}</span>
-                              {details?.realName && (
-                                <span className="text-[10px] text-ash normal-case font-body tracking-normal">({details.realName})</span>
-                              )}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {broadcastPartners.length > 0 && (
-              <div className={currentCasters && currentCasters.length > 0 ? "mt-14 border-t border-stone-3/20 pt-10" : ""}>
-                <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-ash mb-6">WATCH LIVE STREAM</div>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                  {broadcastPartners.map((s) => <SponsorTile key={s.slug} sponsor={s} />)}
-                </div>
-              </div>
-            )}
-          </div>
         </section>
       )}
 
