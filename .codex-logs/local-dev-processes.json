@@ -1,0 +1,13 @@
+﻿{
+    "startedAt":  "2026-07-15T10:27:45.1443722+05:00",
+    "frontendUrl":  "http://localhost:3000",
+    "backendUrl":  "http://localhost:4000",
+    "backendPid":  32432,
+    "frontendPid":  368,
+    "logs":  {
+                 "frontendOut":  "D:\\MAAZ\\BAAZ\\.codex-logs\\frontend-live.out.log",
+                 "frontendErr":  "D:\\MAAZ\\BAAZ\\.codex-logs\\frontend-live.err.log",
+                 "backendOut":  "D:\\MAAZ\\BAAZ\\.codex-logs\\backend-live.out.log",
+                 "backendErr":  "D:\\MAAZ\\BAAZ\\.codex-logs\\backend-live.err.log"
+             }
+}

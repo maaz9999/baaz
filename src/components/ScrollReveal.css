@@ -1,0 +1,22 @@
+.scroll-reveal {
+  margin: 20px 0;
+}
+
+.scroll-reveal-text {
+  line-height: 1.35;
+}
+
+.scroll-reveal-word {
+  display: inline-block;
+  will-change: opacity, filter, transform;
+}
+
+/* Manifesto text: neon glow on fully-revealed words */
+.manifesto-text {
+  color: #ffffff;
+  text-shadow:
+    0 0 30px rgba(200, 255, 45, 0.25),
+    0 0 60px rgba(200, 255, 45, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+  -webkit-font-smoothing: antialiased;
+}

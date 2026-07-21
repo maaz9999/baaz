@@ -1,0 +1,302 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String?
+  passwordHash String
+  role         String     @default("SUPER_ADMIN")
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+  mediaAssets  MediaAsset[]
+
+  @@index([role])
+}
+
+model PostTemplate {
+  id               String   @id @default(cuid())
+  key              String   @unique
+  name             String
+  description      String?
+  defaultEyebrow   String?
+  defaultCtaLabel  String?
+  recommendedSlots Json?
+  previewKind      String?
+  blockOrder       Json?
+  editorGuidance   String?
+  enabled          Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([key])
+  @@index([enabled])
+}
+
+model Post {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  templateKey      String
+  status           String   @default("DRAFT")
+  eyebrow          String?
+  excerpt          String?
+  body             Json?
+  coverImageId     String?
+  gallery          Json?
+  cta              Json?
+  sourceLinks      Json?
+  seo              Json?
+  relatedEventId   String?
+  relatedPlayerId  String?
+  relatedSponsorId String?
+  relatedCircuitId String?
+  publishedAt      DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([status])
+  @@index([templateKey])
+  @@index([publishedAt])
+}
+
+model ContentPlacement {
+  id           String    @id @default(cuid())
+  title        String
+  pageKey      String
+  slotKey      String
+  targetType   String
+  targetId     String
+  variant      String    @default("default")
+  order        Int       @default(0)
+  enabled      Boolean   @default(true)
+  visibleFrom  DateTime?
+  visibleUntil DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([pageKey, slotKey])
+  @@index([targetType, targetId])
+  @@index([enabled, visibleFrom, visibleUntil])
+}
+
+model PageContent {
+  id           String    @id @default(cuid())
+  pageKey      String
+  sectionKey   String
+  title        String?
+  eyebrow      String?
+  body         Json?
+  imageId      String?
+  cta          Json?
+  variant      String    @default("default")
+  order        Int       @default(0)
+  enabled      Boolean   @default(true)
+  visibleFrom  DateTime?
+  visibleUntil DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([pageKey, sectionKey])
+  @@index([enabled, visibleFrom, visibleUntil])
+}
+
+model MediaAsset {
+  id           String     @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  url          String
+  alt          String?
+  caption      String?
+  createdById  String?
+  createdBy    AdminUser? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+
+  @@index([mimeType])
+  @@index([createdById])
+}
+
+model Game {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  short     String?
+  publisher String?
+  art       Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sponsor {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  tier      String   @default("partner")
+  url       String?
+  enabled   Boolean  @default(true)
+  logoLight Json?
+  logoDark  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tier])
+  @@index([enabled])
+}
+
+model Player {
+  id        String   @id @default(cuid())
+  tag       String
+  slug      String   @unique
+  realName  String?
+  country   String   @default("PK")
+  teamId    String?
+  enabled   Boolean  @default(true)
+  photo     Json?
+  mains     Json?
+  socials   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country])
+  @@index([enabled])
+  @@index([teamId])
+}
+
+model Event {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  name            String
+  edition         String?
+  tagline         String?
+  status          String    @default("upcoming")
+  enabled         Boolean   @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+  venue           String?
+  city            String?
+  country         String?
+  prizePool       Json?
+  games           Json?
+  participants    Int?
+  format          String?
+  tier            String?
+  organizer       String?   @default("BAAZ")
+  sponsors        Json?
+  broadcastTalent Json?
+  liquipedia      String?
+  poster          Json?
+  gallery         Json?
+  recapVideo      String?
+  startggEventId  String?
+  results         Json?
+  registrationClosed Boolean?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status])
+  @@index([enabled])
+  @@index([startDate])
+}
+
+model Circuit {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  edition          String?
+  gameSlug         String?
+  status           String   @default("upcoming")
+  enabled          Boolean  @default(true)
+  startDate        DateTime?
+  endDate          DateTime?
+  city             String?
+  country          String?
+  tagline          String?
+  prizePool        Json?
+  slots            Json?
+  pointsRules      String?
+  registrationOpen Boolean  @default(false)
+  registrationUrl  String?
+  startggEventId   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([enabled])
+  @@index([status])
+}
+
+model CircuitStage {
+  id             String    @id @default(cuid())
+  label          String
+  circuitId      String?
+  order          Int       @default(0)
+  startDate      DateTime?
+  endDate        DateTime?
+  city           String?
+  venue          String?
+  startggEventId String?
+  winnerId       String?
+  status         String    @default("upcoming")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([circuitId])
+  @@index([status])
+}
+
+model PointsStanding {
+  id           String   @id @default(cuid())
+  circuitId    String
+  playerId     String
+  points       Int      @default(0)
+  stagesPlayed Int      @default(0)
+  rank         Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([circuitId, playerId])
+  @@index([circuitId, rank])
+}
+
+model Stream {
+  id             String    @id @default(cuid())
+  title          String
+  platform       String
+  channel        String?
+  url            String?
+  scheduledStart DateTime?
+  isLive         Boolean   @default(false)
+  enabled        Boolean   @default(true)
+  eventId        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([platform])
+  @@index([enabled])
+  @@index([isLive])
+}
+
+model AuditLog {
+  id         String     @id @default(cuid())
+  actorId    String?
+  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
